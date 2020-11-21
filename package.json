@@ -1,5 +1,5 @@
 {
-  "name": "Servidor",
+  "name": "SeguridadAPI",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,6 +8,10 @@
     "build": "ng build",
     "heroku-postbuild": "ng build --prod",
     "dev": "nodemon src/index.js"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
   },
   "keywords": [],
   "author": "",
