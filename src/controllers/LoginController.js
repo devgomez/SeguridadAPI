@@ -5,11 +5,6 @@ const moment = require("moment");
 const jwt = require("jwt-simple");
 const { Usuario } = require("../../database");
 
-router.get("/", async (req, res) => {
-  console.log(req);
-  res.render("login");
-});
-
 router.post(
   "/",
   [
@@ -30,23 +25,31 @@ router.post(
       },
     });
     if (usuario) {
-		
       const iguales = bcryp.compareSync(req.body.clave, usuario.clave);
       if (iguales) {
-        res.json({ token: CreateToken(usuario), user : {id: usuario.id, codigo:usuario.codigo, nombre: usuario.nombre, correo:usuario.correo }});
-      } else { 
-        res.json({ errors: "Error en usuario y/o contraseña" });
+        res.json({
+          estado: true,
+          token: CreateToken(usuario),
+          user: {
+            id: usuario.id,
+            codigo: usuario.codigo,
+            nombre: usuario.nombre,
+            correo: usuario.correo,
+          },
+        });
+      } else {
+        res.json({ estado: false, errors: "Error en usuario y/o contraseña" });
       }
     } else {
-     res.json({ errors: "Error en usuario y/o contraseña" });
+      res.json({ estado: false, errors: "Error en usuario y/o contraseña" });
     }
-    res.json(sistema);
+    res.json(usuario);
   }
 );
 
 const CreateToken = (usuario) => {
   const payload = {
-    usuarioId: usuario.id,
+    usuarioCodigo: usuario.codigo,
     createdAt: moment().unix(),
     expiredAt: moment().add(5, "minutes").unix(),
   };

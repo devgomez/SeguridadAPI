@@ -1,36 +1,51 @@
-const router = require('express').Router();
+const router = require("express").Router();
+const { Op } = require("sequelize");
+const { Sistema } = require("../../database");
+const comun = require("./ComunController");
 
-const {Sistema} = require('../../database');
+router.get("/", async (req, res) => {
+  console.log(req.usuarioCodigo);
 
-router.get('/',async (req,res) =>{
-    console.log(req.usuarioId);
-    const sistemas  = await Sistema.findAll();
-    res.json(sistemas);
-});
+  const { page, size, nombre } = req.query;
+  var condition = nombre ? { nombre: { [Op.like]: `%${nombre}%` } } : null;
 
-router.get('/:id',async (req,res) =>{
-	const { id } = req.params;
-    const sistema  = await Sistema.findOne({ where: { id: [id] } });
-    res.json(sistema);
-});
+  const { limit, offset } = comun.getPagination(page, size);
 
-router.post('/',async (req,res) =>{
-    const sistema  = await Sistema.create(req.body);
-    res.json({estado:true,mensaje : "Guardado Correctamente"});
-});
-
-router.put('/:id',async (req,res) =>{
-    const sistema  = await Sistema.update(req.body,{
-        where:{id:req.params.id}
+  await Sistema.findAndCountAll({ where: condition, limit, offset })
+    .then((data) => {
+      const response = comun.getPagingData(data, page, limit);
+      res.json(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "error ocurrido al consultar sistemas.",
+      });
     });
-    res.json({susccess : "Sistema Modificado!!!"})
 });
 
-router.delete('/:id',async (req,res) =>{
-     await Sistema.destroy({
-        where:{id:req.params.id}
-    });
-    res.json({susccess : "Sistema Eliminado!!!"})
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const sistema = await Sistema.findOne({ where: { id: [id] } });
+  res.json(sistema);
+});
+
+router.post("/", async (req, res) => {
+  const sistema = await Sistema.create(req.body);
+  res.json({ estado: true, mensaje: "Guardado Correctamente" });
+});
+
+router.put("/:id", async (req, res) => {
+  const sistema = await Sistema.update(req.body, {
+    where: { id: req.params.id },
+  });
+  res.json({ susccess: "Sistema Modificado!!!" });
+});
+
+router.delete("/:id", async (req, res) => {
+  await Sistema.destroy({
+    where: { id: req.params.id },
+  });
+  res.json({ susccess: "Sistema Eliminado!!!" });
 });
 
 module.exports = router;

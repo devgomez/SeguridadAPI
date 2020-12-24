@@ -6,7 +6,7 @@ const { Menu } = require("../../database");
 const comun = require("./ComunController");
 
 router.get("/", async (req, res) => {
-  console.log(req.usuarioId);
+  console.log(req.usuarioCodigo);
 
   const { page, size, nombre } = req.query;
   var condition = nombre ? { nombre: { [Op.like]: `%${nombre}%` } } : null;

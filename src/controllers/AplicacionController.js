@@ -6,7 +6,7 @@ const { Aplicacion } = require("../../database");
 const comun = require("./ComunController");
 
 router.get("/", async (req, res) => {
-  console.log(req.usuarioId);
+  console.log(req.usuarioCodigo);
 
   const { page, size, nombre } = req.query;
   var condition = nombre ? { nombre: { [Op.like]: `%${nombre}%` } } : null;
@@ -32,22 +32,22 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const aplicacion = await Aplicacion.create(req.body);
+  await Aplicacion.create(req.body);
   res.json({ estado: true, mensaje: "Guardado Correctamente" });
 });
 
 router.put("/:id", async (req, res) => {
-  const aplicacion = await Aplicacion.update(req.body, {
+  await Aplicacion.update(req.body, {
     where: { id: req.params.id },
   });
-  res.json({ susccess: "Aplicacion Modificado!!!" });
+  res.json({ estado: true, mensaje: "Modificado Correctamente" });
 });
 
 router.delete("/:id", async (req, res) => {
   await Aplicacion.destroy({
     where: { id: req.params.id },
   });
-  res.json({ susccess: "Aplicacion Eliminado!!!" });
+  res.json({ estado: true, mensaje: "Eliminado Correctamente" });
 });
 
 module.exports = router;
