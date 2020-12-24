@@ -10,7 +10,7 @@ const opcionesMenuController = require("../controllers/OpcionesMenuController");
 const opcionesMenuOpcionController = require("../controllers/OpcionesMenuOpcionController");
 
 router.use("/sistema", middlewares.checkToken, sistemaController);
-router.use("/usuario", middlewares.checkToken, usuarioController);
+router.use("/usuario", usuarioController);
 router.use("/login", loginController);
 router.use("/menu", middlewares.checkToken, menuController);
 router.use("/aplicacion", middlewares.checkToken, aplicacionController);
